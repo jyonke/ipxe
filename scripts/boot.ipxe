@@ -1,0 +1,82 @@
+#!ipxe
+
+# Variables are specified in boot.ipxe.cfg
+set menu-default reboot
+
+# Some menu defaults
+set menu-timeout 600000
+set submenu-timeout ${menu-timeout}
+isset ${menu-default} || set menu-default exit
+
+console --x 1024 --y 768 --picture http://ipxe.org/_media/logos/ipxe-large.png --depth 32
+cpair --foreground 7 --background 4 0
+
+# Figure out if client is 64-bit capable
+cpuid --ext 29 && set arch x64 || set arch x86
+cpuid --ext 29 && set archb 64 || set archb 32
+cpuid --ext 29 && set archl amd64 || set archl i386
+
+###################### MAIN MENU ####################################
+
+:start
+menu iPXE boot menu
+item --gap --             ------------------------- Windows Pre Boot Environment ------------------------------
+item --key w winpe        Boot WinPE from HTTP
+item --gap --             ------------------------- StratoDesk NoTouchOS ----------------------------
+item --key n notouchos    Install StratoDesk NoTouchOS from HTTP
+item --gap --             ------------------------- Misc ----------------------------
+item shell                Drop to iPXE shell
+item reboot               Reboot computer
+item
+item --key x exit         Exit iPXE and continue BIOS boot
+choose --timeout ${menu-timeout} --default ${menu-default} selected || goto cancel
+set menu-timeout 0
+goto ${selected}
+
+:notouchos
+echo Booting Stratodesk NoTouch OS
+set boot-url http://wds01.internal.lvl12.com/NoTouchOS/images
+kernel ${boot-url}/bzImage IMGURL=${boot-url}/lnx-3.4.195-EEs-k515-x64-220929.lfi AUTOINSTALL=Yes
+initrd ${boot-url}/cuba.img
+initrd ${boot-url}/genesis.img
+boot || goto failed
+goto start
+
+:winpe
+echo Booting WinPE
+set boot-url http://wds01.internal.lvl12.com/ipxe
+kernel ${boot-url}/wimboot quiet
+initrd ${boot-url}/boot/BCD         BCD
+initrd ${boot-url}/boot/boot.sdi    boot.sdi
+initrd ${boot-url}/sources/boot.wim boot.wim
+boot || goto failed
+goto start
+
+:cancel
+echo You cancelled the menu, dropping you to a shell
+
+:shell
+echo Type 'exit' to get the back to the menu
+shell
+set menu-timeout 0
+set submenu-timeout 0
+goto start
+
+:failed
+echo Booting failed, dropping to shell
+goto shell
+
+:reboot
+reboot
+
+:exit
+exit
+
+:config
+config
+goto start
+
+:back
+set submenu-timeout 0
+clear submenu-default
+goto start
