@@ -1,6 +1,6 @@
 #!ipxe
 
-dhcp && chain https://raw.githubusercontent.com/jyonke/ipxe/main/scripts/default.ipxe.cfg || goto dhcperror
+dhcp && chain https://raw.githubusercontent.com/jyonke/ipxe/main/scripts/boot.ipxe.cfg || goto dhcperror
 
 :dhcperror
 prompt --key s --timeout 10000 DHCP failed, hit 's' for the iPXE shell; reboot in 10 seconds && shell || reboot
