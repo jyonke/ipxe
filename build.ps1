@@ -2,6 +2,12 @@ $IPXEGIT = "https://github.com/ipxe/ipxe"
 $IPXEGIT_Folder = Join-Path $Home 'tmp/ipxe-legacy'
 $BuildFolder = Join-Path $PSScriptRoot 'builds'
 
+
+if (-Not(Test-Path $BuildFolder)) {
+    New-Item -ItemType Directory -Path $BuildFolder -Force
+}
+Get-ChildItem -Path $BuildFolder -Recurse -File | Remove-Item -Force
+
 if (Test-Path $IPXEGIT_Folder) {
     Set-Location -Path $IPXEGIT_Folder
     git clean -fd
@@ -25,6 +31,7 @@ Copy-Item -Path "$PSScriptRoot/config/legacy/console.h" -Destination ./config/
 try {
     make bin/undionly.kpxe EMBED=default.ipxe
     make bin/ipxe.iso EMBED=default.ipxe
+    Get-ChildItem -Path $IPXEGIT_Folder -Recurse -Include *.iso, *.efi, *.kpxe | Move-Item -Destination $BuildFolder -Force
 }
 catch {
     $_.Exception.Message
@@ -56,14 +63,9 @@ Copy-Item -Path "$PSScriptRoot/config/uefi/console.h" -Destination ./config/
 # Build the files
 try {
     make bin-x86_64-efi/ipxe.efi EMBED=default.ipxe
+    Get-ChildItem -Path $IPXEGIT_Folder -Recurse -Include *.iso, *.efi, *.kpxe | Move-Item -Destination $BuildFolder -Force
 }
 catch {
     $_.Exception.Message
     exit 1
 }
-
-if (-Not(Test-Path $BuildFolder)) {
-    New-Item -ItemType Directory -Path $BuildFolder -Force
-}
-Get-ChildItem -Path $BuildFolder -Recurse -File | Remove-Item -Force
-Get-ChildItem -Path $PSScriptRoot -Recurse -Include *.iso, *.efi, *.kpxe | Move-Item -Destination $BuildFolder -Force
