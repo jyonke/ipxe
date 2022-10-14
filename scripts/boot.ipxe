@@ -36,7 +36,7 @@ goto ${selected}
 
 :notouchos
 echo Booting Stratodesk NoTouch OS
-kernel ${notouchboot-url}/bzImage IMGURL=${notouchimage-url} AUTOINSTALL=Yes root=/dev/ram0 ide=nodma noapic pci=conf1
+kernel ${notouchboot-url}/bzImage IMGURL=${notouchimage-url} AUTOINSTALL=Yes root=/dev/null noapic pci=conf1
 initrd ${notouchboot-url}/cuba.img
 initrd ${notouchboot-url}/root.img
 initrd ${notouchboot-url}/genesis.img
