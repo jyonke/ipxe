@@ -1,5 +1,6 @@
 $IPXEGIT = "https://github.com/ipxe/ipxe"
 $IPXEGIT_Folder = Join-Path $Home 'tmp/ipxe-legacy'
+$BuildFolder = Join-Path $PSScriptRoot 'builds'
 
 if (Test-Path $IPXEGIT_Folder) {
     Set-Location -Path $IPXEGIT_Folder
@@ -31,7 +32,7 @@ catch {
 }
 
 #Build EFI
-$IPXEGIT_Folder = Join-Path $Home 'ipxe-uefi'
+$IPXEGIT_Folder = Join-Path $Home 'tmp/ipxe-uefi'
 
 if (Test-Path $IPXEGIT_Folder) {
     Set-Location -Path $IPXEGIT_Folder
@@ -54,9 +55,15 @@ Copy-Item -Path "$PSScriptRoot/config/uefi/console.h" -Destination ./config/
 
 # Build the files
 try {
-    make EMBED=default.ipxe bin-x86_64-efi/ipxe.efi
+    make bin-x86_64-efi/ipxe.efi EMBED=default.ipxe
 }
 catch {
     $_.Exception.Message
     exit 1
 }
+
+if (-Not(Test-Path $BuildFolder)) {
+    New-Item -ItemType Directory -Path $BuildFolder -Force
+}
+Get-ChildItem -Path $BuildFolder -Recurse -File | Remove-Item -Force
+Get-ChildItem -Path $PSScriptRoot -Recurse -Include *.iso, *.efi, *.kpxe | Move-Item -Destination $BuildFolder -Force
