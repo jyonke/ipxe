@@ -23,7 +23,7 @@ menu iPXE boot menu
 item --gap --             ------------------------- Windows Pre Boot Environment ------------------------------
 item --key w winpe        Boot WinPE from HTTP
 item --gap --             ------------------------- StratoDesk NoTouchOS ----------------------------
-item --key n notouchos    Install StratoDesk NoTouchOS from HTTP
+item --key n notouchos    Install StratoDesk NoTouchOS (3.4.195-EEs-k515-x64-220929)
 item --gap --             ------------------------- Misc ----------------------------
 item shell                Drop to iPXE shell
 item reboot               Reboot computer
@@ -35,20 +35,18 @@ goto ${selected}
 
 :notouchos
 echo Booting Stratodesk NoTouch OS
-set boot-url http://wds01.internal.lvl12.com/NoTouchOS/images
-kernel ${boot-url}/bzImage IMGURL=${boot-url}/lnx-3.4.195-EEs-k515-x64-220929.lfi AUTOINSTALL=Yes
-initrd ${boot-url}/cuba.img
-initrd ${boot-url}/genesis.img
+kernel ${notouchboot-url}/bzImage IMGURL=${notouchimage-url} AUTOINSTALL=Yes
+initrd ${notouchboot-url}/cuba.img
+initrd ${notouchboot-url}/genesis.img
 boot || goto failed
 goto start
 
 :winpe
 echo Booting WinPE
-set boot-url http://wds01.internal.lvl12.com/ipxe
-kernel ${boot-url}/wimboot quiet
-initrd ${boot-url}/boot/BCD         BCD
-initrd ${boot-url}/boot/boot.sdi    boot.sdi
-initrd ${boot-url}/sources/boot.wim boot.wim
+kernel ${winpeboot-url}/wimboot quiet
+initrd ${winpeboot-url}/BCD         BCD
+initrd ${winpeboot-url}/boot.sdi    boot.sdi
+initrd ${winpeimage-url} boot.wim
 boot || goto failed
 goto start
 
