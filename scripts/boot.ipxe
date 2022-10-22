@@ -21,11 +21,13 @@ cpuid --ext 29 && set archl amd64 || set archl i386
 :start
 menu iPXE boot menu
 item --gap --             ------------------------- Windows Pre Boot Environment ------------------------------
-item --key w winpe        Boot WinPE from HTTP
+item --key w winpe        Boot MDT from HTTP
+item --key p PSD          Boot PSD from HTTP
 item --key o OSDCloud     Boot OSDCloud from HTTP
 item --gap --             ------------------------- StratoDesk NoTouchOS ----------------------------
 item --key n notouchos    Install StratoDesk NoTouchOS (3.4.195-EEs-k515-x64-220929)
 item --gap --             ------------------------- Misc ----------------------------
+item --key z nbxyz        Netboot.xyz
 item shell                Drop to iPXE shell
 item reboot               Reboot computer
 item
@@ -50,6 +52,15 @@ initrd ${winpeimage-url}            boot.wim
 boot || goto failed
 goto start
 
+:PSD
+echo Booting WinPE
+kernel ${winpeboot-url}/wimboot quiet
+initrd ${winpeboot-url}/BCD         BCD
+initrd ${winpeboot-url}/boot.sdi    boot.sdi
+initrd ${psdlitetouchimage-url}     boot.wim
+boot || goto failed
+goto start
+
 :OSDCloud
 echo Booting OSDCloud
 kernel ${winpeboot-url}/wimboot quiet
@@ -58,6 +69,9 @@ initrd ${winpeboot-url}/boot.sdi    boot.sdi
 initrd ${osdcloudimage-url}         boot.wim
 boot || goto failed
 goto start
+
+:nbxyz
+chain --autofree https://boot.netboot.xyz
 
 :cancel
 echo You cancelled the menu, dropping you to a shell
