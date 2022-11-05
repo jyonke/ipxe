@@ -1,4 +1,5 @@
-:stratodesk
+#!ipxe
+
 menu StratoDesk NoTouch OS Menu
 item --gap --             ------------------------- Install ------------------------------
 item --key 1 3.4.195-EEs-k515   3.4.195-EEs-k515-x64 (AUTOINSTALL)
@@ -8,7 +9,7 @@ item --key 4 3.4.95-EEs-k514    3.4.095-EEs-k514-x64 (AUTOINSTALL)
 item --key 5 3.3.660-EEs-k515   3.3.660-EEs-k515-x64 (AUTOINSTALL)
 item --key 6 3.3.660-EEs-k514   3.3.660-EEs-k514-x64 (AUTOINSTALL)
 item --gap --             ------------------------- Misc ----------------------------
-item --key s start Return to start
+item --key  start Return to start
 choose --timeout ${menu-timeout} --default ${menu-default} selected || goto cancel
 set menu-timeout 0
 goto ${selected}
@@ -60,3 +61,9 @@ kernel ${notouchboot-url}/bzImage initrd=genesis.img BOOTMEDIUM=net IMGURL=${not
 initrd ${notouchboot-url}/genesis.img
 boot || goto failed
 goto start
+
+:chainloadfailed
+prompt --key s --timeout 10000 Chainloading failed, hit 's' for the iPXE shell; reboot in 10 seconds && shell || reboot
+
+:start
+chain https://raw.githubusercontent.com/jyonke/ipxe/main/scripts/boot.ipxe || goto chainloadfailed
