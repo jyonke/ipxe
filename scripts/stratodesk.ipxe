@@ -11,7 +11,7 @@ item --key 4 3.4.95-EEs-k514    3.4.095-EEs-k514-x64 (AUTOINSTALL)
 item --key 5 3.3.660-EEs-k515   3.3.660-EEs-k515-x64 (AUTOINSTALL)
 item --key 6 3.3.660-EEs-k514   3.3.660-EEs-k514-x64 (AUTOINSTALL)
 item --gap --             ------------------------- Misc ----------------------------
-item --key  start Return to start
+item --key s start Return to start
 choose --timeout ${menu-timeout} --default ${menu-default} selected || goto start
 set menu-timeout 0
 goto ${selected}
