@@ -8,7 +8,7 @@ set menu-timeout 600000
 set submenu-timeout ${menu-timeout}
 isset ${menu-default} || set menu-default exit
 
-console --x 1024 --y 768 --picture https://github.com/jyonke/ipxe/raw/main/images/ipxe-large.png --depth 32
+console --x 1024 --y 768 --picture https://github.com/jyonke/ipxe/raw/main/images/image3.png --depth 32
 cpair --foreground 7 --background 4 0
 
 # Figure out if client is 64-bit capable
@@ -25,7 +25,7 @@ item --key w winpe        Boot MDT from HTTP
 item --key p PSD          Boot PSD from HTTP
 item --key o OSDCloud     Boot OSDCloud from HTTP
 item --gap --             ------------------------- StratoDesk NoTouchOS ----------------------------
-item --key n notouchos    Install StratoDesk NoTouchOS (3.4.195-EEs-k515-x64-220929)
+item --key n notouchos    StratoDesk NoTouchOS
 item --gap --             ------------------------- Misc ----------------------------
 item --key z nbxyz        Netboot.xyz
 item shell                Drop to iPXE shell
@@ -37,10 +37,7 @@ set menu-timeout 0
 goto ${selected}
 
 :notouchos
-echo Booting Stratodesk NoTouch OS
-kernel ${notouchboot-url}/bzImage initrd=genesis.img BOOTMEDIUM=net IMGURL=${notouchimage-url} AUTOINSTALL=Yes
-initrd ${notouchboot-url}/genesis.img
-boot || goto failed
+chain https://raw.githubusercontent.com/jyonke/ipxe/main/scripts/stratodesk.ipxe  || goto failed
 goto start
 
 :winpe
