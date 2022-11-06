@@ -11,8 +11,7 @@ item 3.3.660-EEs-k515     3.3.660-EEs-k515-x64 (AUTOINSTALL)
 item 3.3.660-EEs-k514     3.3.660-EEs-k514-x64 (AUTOINSTALL)
 item --gap --             ------------------------- Misc ----------------------------
 item --key m Main         Return to (M)ain menu
-choose --timeout ${menu-timeout} --default ${menu-default} selected || goto start
-set menu-timeout 0
+choose selected
 goto boot
 
 :boot
