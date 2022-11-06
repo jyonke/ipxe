@@ -20,8 +20,8 @@ chain --autofree ${git-uri}/scripts/notouchos/${selected}.ipxe  || goto failed
 
 :failed
 echo Booting failed, going back to start
+sleep 5
 goto start
 
 :Main
-echo Booting failed, going back to menu
 chain --autofree ${git-uri}/scripts/boot.ipxe
