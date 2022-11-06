@@ -37,7 +37,7 @@ set menu-timeout 0
 goto ${selected}
 
 :StratoDesk
-chain --autofree ${git-uri}/scripts/stratodesk.ipxe  || goto failed
+chain --autofree ${git-uri}/scripts/notouchos/menu.ipxe  || goto failed
 goto start
 
 :MDT
