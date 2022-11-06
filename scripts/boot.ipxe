@@ -8,7 +8,7 @@ set menu-timeout 600000
 set submenu-timeout ${menu-timeout}
 isset ${menu-default} || set menu-default exit
 
-console --x 1024 --y 768 --picture https://github.com/jyonke/ipxe/raw/main/images/image3.png --depth 32
+console --x 1024 --y 768 --picture ${git-uri}/images/image3.png --depth 32
 cpair --foreground 7 --background 4 0
 
 # Figure out if client is 64-bit capable
@@ -21,13 +21,13 @@ cpuid --ext 29 && set archl amd64 || set archl i386
 :start
 menu iPXE boot menu
 item --gap --             ------------------------- Windows Pre Boot Environment ------------------------------
-item --key w winpe        Boot MDT from HTTP
-item --key p PSD          Boot PSD from HTTP
-item --key o OSDCloud     Boot OSDCloud from HTTP
+item --key m MDT          Boot (M)DT from HTTP
+item --key p PSD          Boot (P)SD from HTTP
+item --key o OSDCloud     Boot (O)SDCloud from HTTP
 item --gap --             ------------------------- StratoDesk NoTouchOS ----------------------------
-item --key n notouchos    StratoDesk NoTouchOS
+item --key n StratoDesk   Install StratoDesk (N)oTouchOS
 item --gap --             ------------------------- Misc ----------------------------
-item --key z nbxyz        Netboot.xyz
+item --key z nbxyz        Netboot.xy(z)
 item shell                Drop to iPXE shell
 item reboot               Reboot computer
 item
@@ -36,35 +36,20 @@ choose --timeout ${menu-timeout} --default ${menu-default} selected || goto canc
 set menu-timeout 0
 goto ${selected}
 
-:notouchos
-chain https://raw.githubusercontent.com/jyonke/ipxe/main/scripts/stratodesk.ipxe  || goto failed
+:StratoDesk
+chain --autofree ${git-uri}/scripts/stratodesk.ipxe  || goto failed
 goto start
 
-:winpe
-echo Booting WinPE
-kernel ${winpeboot-url}/wimboot quiet
-initrd -n BCD ${winpeboot-url}/BCD              BCD
-initrd -n boot.sdi ${winpeboot-url}/boot.sdi    boot.sdi
-initrd -n boot.wim ${winpeimage-url}            boot.wim
-boot || goto failed
+:MDT
+chain --autofree ${git-uri}/scripts/winpe/mdt.ipxe  || goto failed
 goto start
 
 :PSD
-echo Booting WinPE
-kernel ${winpeboot-url}/wimboot quiet
-initrd -n BCD ${winpeboot-url}/BCD              BCD
-initrd -n boot.sdi ${winpeboot-url}/boot.sdi    boot.sdi
-initrd -n boot.wim ${psdlitetouchimage-url}     boot.wim
-boot || goto failed
+chain --autofree ${git-uri}/scripts/winpe/psd.ipxe  || goto failed
 goto start
 
 :OSDCloud
-echo Booting OSDCloud
-kernel ${winpeboot-url}/wimboot quiet
-initrd -n BCD ${winpeboot-url}/BCD              BCD
-initrd -n boot.sdi ${winpeboot-url}/boot.sdi    boot.sdi
-initrd -n boot.wim ${osdcloudimage-url}         boot.wim
-boot || goto failed
+chain --autofree ${git-uri}/scripts/winpe/osdcloud.ipxe  || goto failed
 goto start
 
 :nbxyz
@@ -81,20 +66,11 @@ set submenu-timeout 0
 goto start
 
 :failed
-echo Booting failed, dropping to shell
-goto shell
+echo Booting failed, going back to menu
+chain --autofree ${git-uri}/scripts/boot.ipxe
 
 :reboot
 reboot
 
 :exit
 exit
-
-:config
-config
-goto start
-
-:back
-set submenu-timeout 0
-clear submenu-default
-goto start

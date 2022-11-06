@@ -1,0 +1,27 @@
+#!ipxe
+
+:start
+menu StratoDesk NoTouch OS Menu
+item --gap --             ------------------------- Install ------------------------------
+item 3.4.195-EEs-k515     3.4.195-EEs-k515-x64 (AUTOINSTALL)
+item 3.4.195-EEs-k514     3.4.195-EEs-k514-x64 (AUTOINSTALL)
+item 3.4.95-EEs-k515      3.4.095-EEs-k515-x64 (AUTOINSTALL)
+item 3.4.95-EEs-k514      3.4.095-EEs-k514-x64 (AUTOINSTALL)
+item 3.3.660-EEs-k515     3.3.660-EEs-k515-x64 (AUTOINSTALL)
+item 3.3.660-EEs-k514     3.3.660-EEs-k514-x64 (AUTOINSTALL)
+item --gap --             ------------------------- Misc ----------------------------
+item --key m Main         Return to (M)ain menu
+choose --timeout ${menu-timeout} --default ${menu-default} selected || goto start
+set menu-timeout 0
+goto boot
+
+:boot
+chain --autofree ${git-uri}/scripts/notouchos/${selected}.ipxe  || goto failed
+
+:failed
+echo Booting failed, going back to start
+goto start
+
+:Main
+echo Booting failed, going back to menu
+chain --autofree ${git-uri}/scripts/boot.ipxe
