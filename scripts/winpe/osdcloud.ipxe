@@ -1,0 +1,11 @@
+#!ipxe
+
+echo Booting WinPE
+kernel ${git-uri}/bin/winpe/wimboot quiet
+initrd -n BCD ${git-uri}/bin/winpe/BCD                          BCD
+initrd -n boot.sdi ${git-uri}/bin/winpe/boot.sdi                boot.sdi
+initrd -n boot.wim ${private-uri}/winpe/osdcloud/osdcloud.wim   boot.wim
+boot || goto failed
+
+:failed
+chain -autofree ${git-uri}/scripts/boot.ipxe
