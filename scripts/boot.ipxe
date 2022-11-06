@@ -20,12 +20,14 @@ cpuid --ext 29 && set archl amd64 || set archl i386
 
 :start
 menu iPXE boot menu
-item --gap --             ------------------------- Windows Pre Boot Environment ------------------------------
+item --gap --             ------------------------- Windows Pre Boot Environment ----
 item --key m MDT          Boot (M)DT from HTTP
 item --key p PSD          Boot (P)SD from HTTP
 item --key o OSDCloud     Boot (O)SDCloud from HTTP
-item --gap --             ------------------------- StratoDesk NoTouchOS ----------------------------
+item
+item --gap --             ------------------------- StratoDesk NoTouchOS ------------
 item --key n StratoDesk   Install StratoDesk (N)oTouchOS
+item
 item --gap --             ------------------------- Misc ----------------------------
 item --key z nbxyz        Netboot.xy(z)
 item shell                Drop to iPXE shell
