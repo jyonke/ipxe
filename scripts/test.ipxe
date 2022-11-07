@@ -1,0 +1,4 @@
+#!ipxe
+kernel http://wds01.internal.lvl12.com/NoTouchOS/images/bzImage root=/dev/ram0 initrd=cuba.img appimg=ask:http://192.168.4.236/pxe/getimage.php?id=3.4.195-EEs-k515-x64-220929 ide=nodma silent quiet loglevel=0 noisapnp
+initrd http://wds01.internal.lvl12.com/NoTouchOS/images/cuba.img
+boot
