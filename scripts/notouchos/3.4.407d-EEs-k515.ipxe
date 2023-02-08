@@ -1,0 +1,11 @@
+#!ipxe
+set IMGURL http://stratodesk-california.s3.amazonaws.com/testing/lnx-3.4.407d-EEs-k515-x64-230201.lfi
+
+echo Installing Stratodesk NoTouch OS !!TESTING BUILD!!
+kernel ${git-uri}/bin/notouchos/bzImage initrd=genesis.img BOOTMEDIUM=net IMGURL=${IMGURL} AUTOINSTALL=Yes
+initrd ${git-uri}/bin/notouchos/genesis.img
+boot || goto failed
+goto start
+
+:failed
+chain -autofree ${git-uri}/scripts/boot.ipxe
